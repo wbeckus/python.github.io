@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Python Guide</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --text: #1f2933;
+    --muted: #5f6b7a;
+    --accent: #3572a5;
+    --accent-soft: #e6eef7;
+    --code-bg: #1e2430;
+    --code-text: #e6e6e6;
+    --border: #dde2e8;
+    --yellow: #ffd43b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161d;
+      --card: #1a2029;
+      --text: #e4e8ee;
+      --muted: #9aa5b4;
+      --accent: #6ea8dc;
+      --accent-soft: #223246;
+      --code-bg: #0d1117;
+      --border: #2c3542;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 32px 16px;
+    text-align: center;
+  }
+  header h1 { margin: 0 0 6px; font-size: 2rem; }
+  header p { margin: 0; opacity: 0.9; }
+  .layout {
+    display: flex;
+    max-width: 1150px;
+    margin: 0 auto;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+  nav {
+    flex: 0 0 220px;
+    position: sticky;
+    top: 16px;
+    align-self: flex-start;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  nav h3 { margin: 0 0 8px; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; }
+  nav a {
+    display: block;
+    padding: 5px 8px;
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.93rem;
+  }
+  nav a:hover { background: var(--accent-soft); color: var(--accent); }
+  main { flex: 1; min-width: 0; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    scroll-margin-top: 16px;
+  }
+  section h2 {
+    margin-top: 0;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent-soft);
+    padding-bottom: 6px;
+  }
+  h3 { margin-bottom: 6px; }
+  code {
+    font-family: Consolas, "Courier New", monospace;
+    background: var(--accent-soft);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  pre {
+    position: relative;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 14px 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+  .copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #3a4352;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 9px;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .copy:hover { background: var(--accent); }
+  .output {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-family: Consolas, monospace;
+    font-size: 0.88rem;
+    white-space: pre-wrap;
+    margin-top: -6px;
+  }
+  .output::before { content: "Output:\A"; font-weight: bold; color: var(--muted); }
+  .highlight {
+    border: 2px solid var(--yellow);
+    background: linear-gradient(0deg, var(--card), var(--card));
+  }
+  .highlight h2 { color: var(--text); }
+  .tip {
+    background: #fff8db;
+    color: #5c4a00;
+    border-left: 4px solid var(--yellow);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+  }
+  @media (prefers-color-scheme: dark) {
+    .tip { background: #3a3315; color: #f5e6a8; }
+  }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.93rem; }
+  th, td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; }
+  th { background: var(--accent-soft); }
+  .table-wrap { overflow-x: auto; }
+  ol.steps li { margin-bottom: 4px; }
+  footer { text-align: center; color: var(--muted); padding: 20px 16px 40px; font-size: 0.9rem; }
+  @media (max-width: 800px) {
+    .layout { flex-direction: column; }
+    nav { position: static; flex: none; max-height: none; }
+    section { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐍 Basic Python Guide</h1>
+  <p>A simple, step-by-step walkthrough of the Python basics you'll use every day</p>
+</header>
+
+<div class="layout">
+  <nav>
+    <h3>Contents</h3>
+    <a href="#print">1. print() &amp; Comments</a>
+    <a href="#variables">2. Variables &amp; Types</a>
+    <a href="#input">3. input()</a>
+    <a href="#convert">4. Type Conversion</a>
+    <a href="#featured">⭐ Reading a List of Numbers</a>
+    <a href="#math">5. Math Operators</a>
+    <a href="#strings">6. Strings</a>
+    <a href="#lists">7. Lists</a>
+    <a href="#comprehensions">8. List Comprehensions</a>
+    <a href="#tuples-sets">9. Tuples &amp; Sets</a>
+    <a href="#dicts">10. Dictionaries</a>
+    <a href="#if">11. if / elif / else</a>
+    <a href="#loops">12. Loops</a>
+    <a href="#functions">13. Functions</a>
+    <a href="#builtins">14. Built-in Functions</a>
+    <a href="#lambda">15. lambda, map, filter</a>
+    <a href="#errors">16. Error Handling</a>
+    <a href="#files">17. Files</a>
+    <a href="#modules">18. Modules</a>
+    <a href="#cheatsheet">Cheat Sheet</a>
+  </nav>
+
+  <main>
+
+    <section id="print">
+      <h2>1. print() &amp; Comments</h2>
+      <p><code>print()</code> shows something on the screen. Anything after <code>#</code> is a comment — Python ignores it.</p>
+<pre><code># This is a comment
+print("Hello, world!")
+print("Age:", 15)            # commas add a space between items
+print("a", "b", "c", sep="-")  # change the separator
+print("No newline", end=" ")   # change what goes at the end
+print("same line!")</code></pre>
+      <div class="output">Hello, world!
+Age: 15
+a-b-c
+No newline same line!</div>
+    </section>
+
+    <section id="variables">
+      <h2>2. Variables &amp; Data Types</h2>
+      <p>A variable is a name that stores a value. You don't need to say the type — Python figures it out.</p>
+<pre><code>name = "Alex"       # str   (text)
+age = 16            # int   (whole number)
+height = 5.9        # float (decimal number)
+is_student = True   # bool  (True or False)
+nothing = None      # NoneType (no value)
+
+print(type(name))   # check a variable's type
+print(type(age))</code></pre>
+      <div class="output">&lt;class 'str'&gt;
+&lt;class 'int'&gt;</div>
+      <p>You can assign several variables at once:</p>
+<pre><code>x, y, z = 1, 2, 3
+a = b = 0          # both are 0
+x, y = y, x        # swap two values</code></pre>
+    </section>
+
+    <section id="input">
+      <h2>3. Getting Input with input()</h2>
+      <p><code>input()</code> pauses the program and waits for the user to type something. <strong>It always returns a string</strong>, even if the user types a number.</p>
+<pre><code>name = input("What is your name? ")
+print("Hi,", name)
+
+# Numbers must be converted!
+age = int(input("How old are you? "))
+print("Next year you will be", age + 1)
+
+price = float(input("Enter a price: "))
+print(f"With tax: {price * 1.08:.2f}")</code></pre>
+      <div class="output">What is your name? Sam
+Hi, Sam
+How old are you? 14
+Next year you will be 15
+Enter a price: 10
+With tax: 10.80</div>
+
+      <h3>Reading two values on one line</h3>
+<pre><code>a, b = input("Enter two numbers: ").split()
+a, b = int(a), int(b)
+print(a + b)
+
+# Shorter version using map()
+a, b = map(int, input("Enter two numbers: ").split())</code></pre>
+      <div class="output">Enter two numbers: 4 7
+11</div>
+
+      <h3>Yes / no questions</h3>
+<pre><code>answer = input("Continue? (y/n): ").strip().lower()
+if answer == "y":
+    print("Continuing...")</code></pre>
+      <p class="tip">💡 <code>.strip()</code> removes extra spaces and <code>.lower()</code> makes "Y" and "y" both work.</p>
+    </section>
+
+    <section id="convert">
+      <h2>4. Type Conversion</h2>
+      <p>Change a value from one type to another.</p>
+      <div class="table-wrap">
+      <table>
+        <tr><th>Function</th><th>Example</th><th>Result</th></tr>
+        <tr><td><code>int()</code></td><td><code>int("42")</code></td><td><code>42</code></td></tr>
+        <tr><td><code>float()</code></td><td><code>float("3.5")</code></td><td><code>3.5</code></td></tr>
+        <tr><td><code>str()</code></td><td><code>str(99)</code></td><td><code>"99"</code></td></tr>
+        <tr><td><code>bool()</code></td><td><code>bool(0)</code></td><td><code>False</code></td></tr>
+        <tr><td><code>list()</code></td><td><code>list("abc")</code></td><td><code>['a', 'b', 'c']</code></td></tr>
+        <tr><td><code>int()</code> on float</td><td><code>int(7.9)</code></td><td><code>7</code> (cuts off decimal)</td></tr>
+      </table>
+      </div>
+      <p class="tip">⚠️ <code>int("hello")</code> or <code>int("3.5")</code> causes a <code>ValueError</code>. See <a href="#errors">Error Handling</a>.</p>
+    </section>
+
+    <section id="featured" class="highlight">
+      <h2>⭐ Reading a List of Numbers in One Line</h2>
+      <p>This is one of the most useful lines in beginner Python:</p>
+<pre><code>numbers = [int(n.strip()) for n in input("Enter numbers separated by commas: ").split(",")]
+print(numbers)
+print("Total:", sum(numbers))</code></pre>
+      <div class="output">Enter numbers separated by commas: 5, 10, 15,20
+[5, 10, 15, 20]
+Total: 50</div>
+
+      <h3>How it works (read it inside-out)</h3>
+      <ol class="steps">
+        <li><code>input("Enter numbers separated by commas: ")</code> → the user types <code>"5, 10, 15,20"</code> (a string).</li>
+        <li><code>.split(",")</code> → cuts the string at each comma: <code>["5", " 10", " 15", "20"]</code></li>
+        <li><code>for n in ...</code> → goes through each piece one at a time.</li>
+        <li><code>n.strip()</code> → removes extra spaces: <code>" 10"</code> becomes <code>"10"</code></li>
+        <li><code>int(...)</code> → turns the text into a real number: <code>"10"</code> becomes <code>10</code></li>
+        <li><code>[ ... ]</code> → collects all the results into a new list.</li>
+      </ol>
+
+      <h3>The same thing written the long way</h3>
+<pre><code>text = input("Enter numbers separated by commas: ")
+pieces = text.split(",")
+numbers = []
+for n in pieces:
+    numbers.append(int(n.strip()))
+print(numbers)</code></pre>
+
+      <h3>Useful variations</h3>
+<pre><code># Numbers separated by spaces (split() with no argument splits on any whitespace)
+nums = [int(n) for n in input("Enter numbers: ").split()]
+
+# Decimal numbers
+prices = [float(p.strip()) for p in input("Prices: ").split(",")]
+
+# Words, cleaned up
+names = [w.strip().title() for w in input("Names: ").split(",")]
+
+# Using map() instead
+nums = list(map(int, input("Enter numbers: ").split()))</code></pre>
+      <p class="tip">💡 <code>int()</code> actually ignores spaces on its own, so <code>int(" 10")</code> works — but <code>.strip()</code> is a good habit, especially for strings.</p>
+    </section>
+
+    <section id="math">
+      <h2>5. Math Operators</h2>
+      <div class="table-wrap">
+      <table>
+        <tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr>
+        <tr><td><code>+</code></td><td>Add</td><td><code>7 + 2</code></td><td>9</td></tr>
+        <tr><td><code>-</code></td><td>Subtract</td><td><code>7 - 2</code></td><td>5</td></tr>
+        <tr><td><code>*</code></td><td>Multiply</td><td><code>7 * 2</code></td><td>14</td></tr>
+        <tr><td><code>/</code></td><td>Divide (always float)</td><td><code>7 / 2</code></td><td>3.5</td></tr>
+        <tr><td><code>//</code></td><td>Floor divide (whole number)</td><td><code>7 // 2</code></td><td>3</td></tr>
+        <tr><td><code>%</code></td><td>Remainder (modulo)</td><td><code>7 % 2</code></td><td>1</td></tr>
+        <tr><td><code>**</code></td><td>Power</td><td><code>7 ** 2</code></td><td>49</td></tr>
+      </table>
+      </div>
+<pre><code>score = 10
+score += 5    # same as score = score + 5  → 15
+score -= 3    # → 12
+score *= 2    # → 24
+
+# Check if a number is even
+n = 8
+print(n % 2 == 0)   # True</code></pre>
+      <h3>Comparison operators</h3>
+      <p><code>==</code> equal, <code>!=</code> not equal, <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code>. These give <code>True</code> or <code>False</code>.</p>
+      <h3>Logic operators</h3>
+<pre><code>age = 15
+print(age &gt; 12 and age &lt; 20)  # True  (both must be true)
+print(age &lt; 5 or age &gt; 10)    # True  (one must be true)
+print(not age == 15)          # False (flips it)</code></pre>
+    </section>
+
+    <section id="strings">
+      <h2>6. Strings</h2>
+      <h3>f-strings (the easiest way to format text)</h3>
+<pre><code>name = "Maya"
+score = 92.456
+print(f"{name} scored {score:.1f} points")   # .1f = 1 decimal place
+print(f"2 + 3 = {2 + 3}")                      # you can do math inside {}</code></pre>
+      <div class="output">Maya scored 92.5 points
+2 + 3 = 5</div>
+
+      <h3>Common string methods</h3>
+<pre><code>s = "  Hello World  "
+s.strip()            # "Hello World"     remove spaces at the ends
+s.lower()            # "  hello world  "
+s.upper()            # "  HELLO WORLD  "
+s.strip().title()    # "Hello World"     capitalize each word
+s.replace("World", "Python")   # "  Hello Python  "
+s.strip().split(" ") # ["Hello", "World"]
+"-".join(["a", "b", "c"])      # "a-b-c"
+"hello".count("l")   # 2
+"hello".find("l")    # 2  (index of first match, -1 if not found)
+"hello".startswith("he")  # True
+"123".isdigit()      # True
+"abc".isalpha()      # True</code></pre>
+
+      <h3>Indexing &amp; slicing</h3>
+<pre><code>word = "Python"
+#       012345
+print(word[0])     # P     first letter
+print(word[-1])    # n     last letter
+print(word[0:3])   # Pyt   index 0 up to (not including) 3
+print(word[2:])    # thon  from index 2 to the end
+print(word[::-1])  # nohtyP  reversed
+print(len(word))   # 6</code></pre>
+      <p>Strings can be joined with <code>+</code> and repeated with <code>*</code>: <code>"ha" * 3</code> → <code>"hahaha"</code>.</p>
+    </section>
+
+    <section id="lists">
+      <h2>7. Lists</h2>
+      <p>A list holds many values in order. Lists can be changed.</p>
+<pre><code>fruits = ["apple", "banana", "cherry"]
+
+fruits.append("mango")       # add to the end
+fruits.insert(0, "kiwi")     # add at a position
+fruits.remove("banana")      # remove by value
+last = fruits.pop()          # remove &amp; return the last item
+fruits[0] = "grape"          # change an item
+
+print(fruits)
+print(len(fruits))           # how many items
+print("apple" in fruits)     # check if something is in the list</code></pre>
+      <div class="output">['grape', 'apple', 'cherry']
+3
+True</div>
+      <h3>More list tools</h3>
+<pre><code>nums = [4, 1, 9, 3]
+nums.sort()                  # sorts in place → [1, 3, 4, 9]
+nums.sort(reverse=True)      # → [9, 4, 3, 1]
+nums.reverse()               # flip the order
+new = sorted(nums)           # returns a NEW sorted list
+nums.index(9)                # position of 9
+nums.count(4)                # how many 4s
+nums.extend([7, 8])          # add many items
+copy = nums.copy()           # make a copy
+nums.clear()                 # empty the list</code></pre>
+      <p>Slicing works the same as strings: <code>nums[1:3]</code>, <code>nums[-1]</code>, <code>nums[::-1]</code>.</p>
+    </section>
+
+    <section id="comprehensions">
+      <h2>8. List Comprehensions</h2>
+      <p>A short way to build a new list from another one. Pattern: <code>[expression for item in list if condition]</code></p>
+<pre><code>nums = [1, 2, 3, 4, 5, 6]
+
+squares = [n ** 2 for n in nums]          # [1, 4, 9, 16, 25, 36]
+evens   = [n for n in nums if n % 2 == 0] # [2, 4, 6]
+doubled = [n * 2 for n in range(5)]       # [0, 2, 4, 6, 8]
+words   = ["hi", "hello", "hey"]
+lengths = [len(w) for w in words]         # [2, 5, 3]
+labels  = ["even" if n % 2 == 0 else "odd" for n in nums]
+
+# Dictionary and set comprehensions too
+squares_dict = {n: n ** 2 for n in range(4)}   # {0: 0, 1: 1, 2: 4, 3: 9}
+unique_lens  = {len(w) for w in words}         # {2, 3, 5}</code></pre>
+      <p class="tip">💡 The <a href="#featured">⭐ featured input line</a> is a list comprehension!</p>
+    </section>
+
+    <section id="tuples-sets">
+      <h2>9. Tuples &amp; Sets</h2>
+      <h3>Tuples — like lists, but can't be changed</h3>
+<pre><code>point = (3, 5)
+print(point[0])     # 3
+x, y = point        # "unpacking"
+# point[0] = 10     # ❌ error — tuples are unchangeable</code></pre>
+      <h3>Sets — no duplicates, no order</h3>
+<pre><code>colors = {"red", "blue", "red", "green"}
+print(colors)              # {'red', 'blue', 'green'}  (duplicate removed)
+colors.add("yellow")
+colors.discard("blue")
+
+# Remove duplicates from a list
+nums = [1, 2, 2, 3, 3, 3]
+unique = list(set(nums))   # [1, 2, 3]
+
+a = {1, 2, 3}
+b = {2, 3, 4}
+print(a | b)   # union        {1, 2, 3, 4}
+print(a &amp; b)   # intersection {2, 3}
+print(a - b)   # difference   {1}</code></pre>
+    </section>
+
+    <section id="dicts">
+      <h2>10. Dictionaries</h2>
+      <p>A dictionary stores <strong>key: value</strong> pairs — like a real dictionary stores word: definition.</p>
+<pre><code>student = {"name": "Leo", "age": 15, "grade": "A"}
+
+print(student["name"])            # Leo
+print(student.get("email", "none"))  # safe lookup with a default
+student["age"] = 16               # change a value
+student["school"] = "Lincoln"     # add a new key
+del student["grade"]              # remove a key
+
+for key, value in student.items():
+    print(key, "=&gt;", value)</code></pre>
+      <div class="output">Leo
+none
+name =&gt; Leo
+age =&gt; 16
+school =&gt; Lincoln</div>
+<pre><code>student.keys()      # all the keys
+student.values()    # all the values
+"name" in student   # True — checks keys
+
+# Counting things with a dictionary
+word = "banana"
+counts = {}
+for letter in word:
+    counts[letter] = counts.get(letter, 0) + 1
+print(counts)       # {'b': 1, 'a': 3, 'n': 2}</code></pre>
+    </section>
+
+    <section id="if">
+      <h2>11. if / elif / else</h2>
+      <p>Run code only when a condition is true. <strong>Indentation (4 spaces) matters!</strong></p>
+<pre><code>score = int(input("Enter your score: "))
+
+if score &gt;= 90:
+    print("A")
+elif score &gt;= 80:
+    print("B")
+elif score &gt;= 70:
+    print("C")
+else:
+    print("Keep practicing!")</code></pre>
+      <div class="output">Enter your score: 85
+B</div>
+<pre><code># One-line if (ternary)
+age = 17
+status = "adult" if age &gt;= 18 else "minor"
+
+# Check a range
+if 1 &lt;= age &lt;= 100:
+    print("valid age")
+
+# Empty things count as False
+items = []
+if not items:
+    print("The list is empty")</code></pre>
+    </section>
+
+    <section id="loops">
+      <h2>12. Loops</h2>
+      <h3>for loops &amp; range()</h3>
+<pre><code>for i in range(5):          # 0, 1, 2, 3, 4
+    print(i, end=" ")
+
+for i in range(1, 11, 2):   # start, stop, step → 1 3 5 7 9
+    print(i, end=" ")
+
+for i in range(10, 0, -1):  # count down
+    print(i, end=" ")
+
+for letter in "cat":        # loop through a string
+    print(letter)</code></pre>
+
+      <h3>enumerate() — get the index too</h3>
+<pre><code>fruits = ["apple", "banana", "cherry"]
+for i, fruit in enumerate(fruits, start=1):
+    print(i, fruit)</code></pre>
+      <div class="output">1 apple
+2 banana
+3 cherry</div>
+
+      <h3>zip() — loop through two lists together</h3>
+<pre><code>names = ["Ann", "Ben"]
+scores = [90, 85]
+for name, score in zip(names, scores):
+    print(f"{name}: {score}")</code></pre>
+      <div class="output">Ann: 90
+Ben: 85</div>
+
+      <h3>while loops</h3>
+<pre><code>count = 3
+while count &gt; 0:
+    print(count)
+    count -= 1
+print("Liftoff!")
+
+# Keep asking until the user types "quit"
+while True:
+    cmd = input("Type something (quit to stop): ")
+    if cmd == "quit":
+        break          # exit the loop
+    if cmd == "":
+        continue       # skip to the next round
+    print("You typed:", cmd)</code></pre>
+      <p class="tip">💡 <code>break</code> stops the loop completely. <code>continue</code> skips to the next round.</p>
+    </section>
+
+    <section id="functions">
+      <h2>13. Functions</h2>
+      <p>A function is a reusable block of code. Define it with <code>def</code>, send it values (parameters), and get a result with <code>return</code>.</p>
+<pre><code>def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Zoe")
+
+def add(a, b):
+    return a + b
+
+result = add(3, 4)
+print(result)        # 7</code></pre>
+      <div class="output">Hello, Zoe!
+7</div>
+      <h3>Default values &amp; keyword arguments</h3>
+<pre><code>def power(base, exp=2):
+    return base ** exp
+
+print(power(5))          # 25   (uses default exp=2)
+print(power(2, 3))       # 8
+print(power(exp=3, base=4))  # 64  (named arguments)</code></pre>
+      <h3>Returning more than one value</h3>
+<pre><code>def stats(numbers):
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+low, high, avg = stats([4, 8, 15, 16, 23, 42])
+print(low, high, avg)   # 4 42 18.0</code></pre>
+      <h3>Putting it together with input</h3>
+<pre><code>def get_numbers():
+    return [int(n.strip()) for n in input("Enter numbers separated by commas: ").split(",")]
+
+def average(nums):
+    return sum(nums) / len(nums)
+
+nums = get_numbers()
+print(f"Average: {average(nums):.2f}")</code></pre>
+      <div class="output">Enter numbers separated by commas: 3, 6, 9
+Average: 6.00</div>
+    </section>
+
+    <section id="builtins">
+      <h2>14. Handy Built-in Functions</h2>
+      <div class="table-wrap">
+      <table>
+        <tr><th>Function</th><th>What it does</th><th>Example → Result</th></tr>
+        <tr><td><code>len()</code></td><td>Length / count</td><td><code>len([1,2,3])</code> → 3</td></tr>
+        <tr><td><code>sum()</code></td><td>Add all items</td><td><code>sum([1,2,3])</code> → 6</td></tr>
+        <tr><td><code>min()</code> / <code>max()</code></td><td>Smallest / largest</td><td><code>max(4, 9, 2)</code> → 9</td></tr>
+        <tr><td><code>abs()</code></td><td>Absolute value</td><td><code>abs(-5)</code> → 5</td></tr>
+        <tr><td><code>round()</code></td><td>Round a number</td><td><code>round(3.14159, 2)</code> → 3.14</td></tr>
+        <tr><td><code>sorted()</code></td><td>New sorted list</td><td><code>sorted([3,1,2])</code> → [1, 2, 3]</td></tr>
+        <tr><td><code>reversed()</code></td><td>Reverse order</td><td><code>list(reversed([1,2,3]))</code> → [3, 2, 1]</td></tr>
+        <tr><td><code>range()</code></td><td>Sequence of numbers</td><td><code>list(range(4))</code> → [0, 1, 2, 3]</td></tr>
+        <tr><td><code>type()</code></td><td>Show the type</td><td><code>type(3.0)</code> → float</td></tr>
+        <tr><td><code>isinstance()</code></td><td>Check a type</td><td><code>isinstance(5, int)</code> → True</td></tr>
+        <tr><td><code>any()</code> / <code>all()</code></td><td>Any / all True?</td><td><code>all([True, False])</code> → False</td></tr>
+        <tr><td><code>pow()</code></td><td>Power</td><td><code>pow(2, 5)</code> → 32</td></tr>
+        <tr><td><code>divmod()</code></td><td>Quotient &amp; remainder</td><td><code>divmod(17, 5)</code> → (3, 2)</td></tr>
+        <tr><td><code>chr()</code> / <code>ord()</code></td><td>Number ↔ letter</td><td><code>ord("A")</code> → 65</td></tr>
+        <tr><td><code>help()</code></td><td>Show documentation</td><td><code>help(str.split)</code></td></tr>
+      </table>
+      </div>
+<pre><code>words = ["pear", "fig", "banana"]
+print(sorted(words, key=len))   # sort by length → ['fig', 'pear', 'banana']
+print(max(words, key=len))      # longest word   → banana</code></pre>
+    </section>
+
+    <section id="lambda">
+      <h2>15. lambda, map() &amp; filter()</h2>
+      <p>A <code>lambda</code> is a tiny one-line function with no name.</p>
+<pre><code>square = lambda x: x ** 2
+print(square(6))     # 36
+
+nums = [1, 2, 3, 4, 5]
+
+# map() — do something to every item
+doubled = list(map(lambda x: x * 2, nums))      # [2, 4, 6, 8, 10]
+
+# filter() — keep only items that pass a test
+odds = list(filter(lambda x: x % 2 == 1, nums)) # [1, 3, 5]
+
+# Sort a list of tuples by the second value
+people = [("Ann", 30), ("Bob", 22), ("Cy", 27)]
+people.sort(key=lambda p: p[1])
+print(people)   # [('Bob', 22), ('Cy', 27), ('Ann', 30)]</code></pre>
+    </section>
+
+    <section id="errors">
+      <h2>16. Error Handling (try / except)</h2>
+      <p>Stop your program from crashing when something goes wrong — like a user typing letters instead of a number.</p>
+<pre><code>try:
+    age = int(input("Enter your age: "))
+    print("In 10 years you'll be", age + 10)
+except ValueError:
+    print("That's not a whole number!")</code></pre>
+      <div class="output">Enter your age: twelve
+That's not a whole number!</div>
+      <h3>Keep asking until the input is valid</h3>
+<pre><code>while True:
+    try:
+        numbers = [int(n.strip()) for n in input("Enter numbers separated by commas: ").split(",")]
+        break
+    except ValueError:
+        print("Please only enter numbers, like: 1, 2, 3")
+
+print("You entered:", numbers)</code></pre>
+<pre><code>try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("Can't divide by zero")
+finally:
+    print("This always runs")</code></pre>
+      <p>Common errors: <code>ValueError</code>, <code>TypeError</code>, <code>ZeroDivisionError</code>, <code>IndexError</code> (list index too big), <code>KeyError</code> (missing dictionary key), <code>NameError</code> (variable doesn't exist).</p>
+    </section>
+
+    <section id="files">
+      <h2>17. Reading &amp; Writing Files</h2>
+<pre><code># Write (creates or overwrites the file)
+with open("notes.txt", "w") as f:
+    f.write("First line\n")
+    f.write("Second line\n")
+
+# Append (adds to the end)
+with open("notes.txt", "a") as f:
+    f.write("Third line\n")
+
+# Read the whole file
+with open("notes.txt", "r") as f:
+    content = f.read()
+print(content)
+
+# Read line by line
+with open("notes.txt") as f:
+    for line in f:
+        print(line.strip())</code></pre>
+      <p class="tip">💡 <code>with</code> automatically closes the file for you when you're done.</p>
+    </section>
+
+    <section id="modules">
+      <h2>18. Importing Modules</h2>
+      <p>Python comes with lots of extra tools. Use <code>import</code> to load them.</p>
+<pre><code>import math
+print(math.sqrt(16))     # 4.0
+print(math.pi)           # 3.141592653589793
+print(math.floor(3.7))   # 3
+print(math.ceil(3.2))    # 4
+
+import random
+print(random.randint(1, 6))          # random whole number 1–6
+print(random.choice(["a", "b", "c"]))  # random item
+nums = [1, 2, 3, 4]
+random.shuffle(nums)                 # mix up the list
+
+from datetime import date
+print(date.today())
+
+import time
+time.sleep(1)            # pause for 1 second</code></pre>
+      <h3>Mini project: number guessing game</h3>
+<pre><code>import random
+
+secret = random.randint(1, 20)
+guesses = 0
+
+while True:
+    try:
+        guess = int(input("Guess a number 1-20: "))
+    except ValueError:
+        print("Numbers only!")
+        continue
+    guesses += 1
+    if guess &lt; secret:
+        print("Too low")
+    elif guess &gt; secret:
+        print("Too high")
+    else:
+        print(f"Correct! You got it in {guesses} guesses.")
+        break</code></pre>
+    </section>
+
+    <section id="cheatsheet">
+      <h2>📋 Quick Cheat Sheet</h2>
+<pre><code># INPUT
+name  = input("Name: ")
+num   = int(input("Number: "))
+dec   = float(input("Decimal: "))
+a, b  = map(int, input("Two numbers: ").split())
+nums  = [int(n.strip()) for n in input("Enter numbers separated by commas: ").split(",")]
+words = input("Words: ").split()
+
+# OUTPUT
+print(f"{name} has {num} points")
+print(f"{dec:.2f}")          # 2 decimal places
+
+# LISTS
+nums.append(x); nums.remove(x); nums.sort(); len(nums)
+sum(nums); min(nums); max(nums); sum(nums) / len(nums)
+
+# LOOPS
+for i in range(n): ...
+for i, item in enumerate(items): ...
+while condition: ...
+
+# FUNCTIONS
+def name(param, default=1):
+    return result
+
+# SAFE INPUT
+try:
+    x = int(input())
+except ValueError:
+    print("Invalid")</code></pre>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Made for learning Python basics · Try every example yourself in a Python editor!
+</footer>
+
+<script>
+  document.querySelectorAll("pre").forEach(function (pre) {
+    var btn = document.createElement("button");
+    btn.className = "copy";
+    btn.textContent = "Copy";
+    btn.addEventListener("click", function () {
+      var text = pre.querySelector("code").innerText;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = "Copied!";
+        setTimeout(function () { btn.textContent = "Copy"; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+</script>
+
+</body>
+</html>
